@@ -1,0 +1,16 @@
+name: test
+on: [push, pull_request]
+jobs:
+  forge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Install dependencies
+        run: |
+          forge install --no-git foundry-rs/forge-std
+          forge install --no-git OpenZeppelin/openzeppelin-contracts@v5.1.0
+      - run: forge fmt --check
+      - run: forge build --sizes
+      - run: forge test -vvv
+      - run: forge coverage --no-match-coverage "test|script" --report summary
